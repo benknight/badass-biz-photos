@@ -1,0 +1,9 @@
+{
+	"name": "Badass Biz Photos",
+	"version": "0.9",
+	"manifest_version": 2,
+	"description": "Yelp Hackathon 9.0 project",
+	"browser_action": {
+		"default_icon": "icon.png"
+	}
+}
