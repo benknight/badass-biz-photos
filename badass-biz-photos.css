@@ -1,0 +1,45 @@
+/** Hide stuff */
+.galleria-hidden,
+.galleria-hidden * {
+	visibility: hidden !important;
+}
+
+/** Grid UI */
+
+/* Align left edge of thumb container with heading */
+#yelp_main_body.biz-photos-page #photo-thumbnails {
+	margin-left: -7px;
+}
+
+/* Remove top margin from the first row of photos */
+#yelp_main_body.biz-photos-page .photo:nth-child(-n+4) {
+	margin-top: 0;
+}
+
+#yelp_main_body.biz-photos-page .photo {
+	width: 156px;
+	height: auto;
+	padding: 0;
+}
+
+#yelp_main_body.biz-photos-page .photo-box {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0;
+	padding: 7px;
+	border: none;
+}
+
+#yelp_main_body.biz-photos-page .photo-box .photo-img {
+	box-sizing: border-box;
+	width: 142px;
+	height: 142px;
+}
+
+.biz-photos-page .photo-details-base #selected-photo-frame {
+	width: 642px;
+}
+
+.biz-photos-page .photo-details-base #selected-photo {
+	margin-top: 5px;
+}
