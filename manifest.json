@@ -25,6 +25,5 @@
 	"web_accessible_resources": [
 		"galleria/themes/hackathon9/classic-map.png",
 		"galleria/themes/hackathon9/classic-loader.gif"
-	],
-	"all_frames": true
+	]
 }
