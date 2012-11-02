@@ -36,20 +36,27 @@ function derp() {
 	// If we're on the biz page, get the page.
 	} else if ( is_biz_page() ) {
 
-		var url;
+		// Do it in an iframe! .. ?
+
+		var biz_photos_url;
 		var $slider_link = $('#slide-viewer-all');
-		var $biz_photos_link = $('#bizPhotos a');
+		var $static_link = $('#bizPhotos a');
 
 		if ( $slider_link.length ) {
-			url = $slider_link.attr('href');
-		} else if ( $biz_photos_link.length ) {
-			url = $biz_photos_link.attr('href');
+			biz_photos_url = $slider_link.attr('href');
+		} else if ( $static_link.length ) {
+			biz_photos_url = $static_link.attr('href');
 		} else {
 			return false;
 		}
 
-		// do the ajax request
-		$.get(url, processImageData);
+		// TODO: change this load even to a ready event
+		var iframe = $('<iframe id="biz-photos-iframe" class="offscreen" name="biz-photos-iframe"></iframe>')
+			.attr('src', biz_photos_url)
+			.load(function() { processImageData( $(this).contents() ); });
+
+		$('body').append( iframe );
+		//window.frames['biz-photos-iframe'].document.addEventListener('DOMContentLoaded')
 
 	// We found nothing
 	} else {
@@ -59,13 +66,16 @@ function derp() {
 
 function processImageData(context) {
 	var imageData = [];
-	$('.photos img.photo-img', context).each(function(index) {
+	$('#photo-thumbnails .photo', context).each(function(index) {
+		$this = $(this);
 		imageData.push({
-			thumb: this.src,
-			image: convertPhotoURI(this.src, 'o')
+			thumb: $this.find('img.photo-img').attr('src'),
+			image: convertPhotoURI( $this.find('img.photo-img').attr('src'), 'o' ),
+			title: $this.find('.caption p:first-child').html(),
+			description: $this.find('.caption p:nth-child(2)').text()
 		});
 		if ( ! context ) {
-			$(this).attr('galleria-index', index);
+			$this.find('img.photo-img').attr('galleria-index', index);
 		}
 	});
 	initGalleria(imageData);

@@ -15,22 +15,21 @@ Galleria.addTheme({
         carousel: false,
 
         // set this to false if you want to show the caption all the time:
-        _toggleInfo: true,
-        _bizName: ''
+        _toggleInfo: false,
+        _bizName: '',
+        _maxThumbs: 9
     },
     init: function(options) {
 
         Galleria.requires(1.28, 'This theme requires Galleria 1.2.8 or later');
 
-        this.hide = function() {
-            this.$('container').parent().addClass('galleria-hidden');
-        }
-
         // keyboard events
         this.attachKeyboard({
             right: this.next,
             left: this.prev,
-            escape: this.hide
+            escape: function() {
+                $('#galleria').addClass('galleria-hidden');
+            }
         });
 
         // add some elements
@@ -43,6 +42,49 @@ Galleria.addTheme({
         this.$('biz-info').text( options._bizName );
         this.appendChild('container', 'biz-info');
 
+        if ( this.getDataLength() > options._maxThumbs ) {
+            this.addElement('thumbnails-more');
+            var more = this.$('thumbnails-more');
+            var thumb_container = this.$('thumbnails-container');
+            more.bind('click', function() {
+                thumb_container.toggleClass('expanded');
+            });
+            this.appendChild('thumbnails-container', 'thumbnails-more');
+        }
+
+        // Fake rating widget
+        this.addElement('faux-rating');
+        this.$('faux-rating').html([
+            '<div class="rate-photo">',
+                '<h3>Rate this Photo</h3>',
+                '<label for="radio1">',
+                    '<input id="radio1" name="rating" value="Helpful" type="radio">',
+                    'Very Helpful',
+                '</label><br>',
+                '<label for="radio2">',
+                    '<input id="radio2" name="rating" value="Helpful" type="radio">',
+                    'Helpful',
+                '</label><br>',
+                '<label for="radio3">',
+                    '<input id="radio3" name="rating" value="Not Helpful" type="radio">',
+                    'Not Helpful',
+                '</label>',
+            '</div>'
+        ].join(''));
+        this.appendChild('thumbnails-container', 'faux-rating');
+
+        // Fake ad
+        this.addElement('faux-ad');
+        this.$('faux-ad').text('300x250');
+        this.appendChild('thumbnails-container', 'faux-ad');
+
+        // Close button
+        this.addElement('close');
+        this.$('close').text('×').click(function() {
+            $('#galleria').addClass('galleria-hidden');
+        });
+        this.appendChild('container', 'close');
+
         // cache some stuff
         var info = this.$('info-link,info-close,info-text'),
             touch = Galleria.TOUCH,
@@ -53,9 +95,10 @@ Galleria.addTheme({
 
         // some stuff for non-touch browsers
         if (! touch ) {
-            this.addIdleState( this.get('image-nav-left'), { left:-50 });
-            this.addIdleState( this.get('image-nav-right'), { right:-50 });
-            this.addIdleState( this.get('counter'), { opacity:0 });
+            this.addIdleState( this.get('image-nav-left'), { left: -50 });
+            this.addIdleState( this.get('image-nav-right'), { right: -50 });
+            this.addIdleState( this.get('counter'), { opacity: 0 });
+            this.addIdleState( this.get('info'), { bottom: -64 });
         }
 
         // toggle info
