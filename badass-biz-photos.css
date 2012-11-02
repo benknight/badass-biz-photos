@@ -6,23 +6,18 @@
 
 /** Grid UI */
 
-/* Align left edge of thumb container with heading */
-#yelp_main_body.biz-photos-page #photo-thumbnails {
-	margin-left: -7px;
-}
-
 /* Remove top margin from the first row of photos */
-#yelp_main_body.biz-photos-page .photo:nth-child(-n+4) {
+#photo-thumbnails .photo:nth-child(-n+4) {
 	margin-top: 0;
 }
 
-#yelp_main_body.biz-photos-page .photo {
+#photo-thumbnails .photo {
 	width: 156px;
 	height: auto;
 	padding: 0;
 }
 
-#yelp_main_body.biz-photos-page .photo-box {
+#photo-thumbnails .photo-box {
 	box-sizing: border-box;
 	width: 100%;
 	margin: 0;
@@ -30,7 +25,7 @@
 	border: none;
 }
 
-#yelp_main_body.biz-photos-page .photo-box .photo-img {
+#photo-thumbnails .photo-img {
 	box-sizing: border-box;
 	width: 142px;
 	height: 142px;

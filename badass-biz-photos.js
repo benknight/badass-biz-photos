@@ -12,6 +12,15 @@ function is_biz_photos_page() {
 	return !! window.location.pathname.match('/biz_photos');
 }
 
+function getBizName() {
+	if ( is_biz_page() ) {
+		return $('h1').text();
+	}
+	if ( is_biz_photos_page() ) {
+		return $('h2 a').text().slice(0, -1);
+	}
+}
+
 function getPhotoIndexByURL(photo_url) {
 	// TODO
 }
@@ -68,26 +77,41 @@ function enhanceGridPhotos() {
 
 	}).click(function(e) {
 		// disable page events
-		e.stopPropagation(); e.preventDefault();
+		//e.stopPropagation(); e.preventDefault();
 
 		// open galleria at this index
 		var gal = Galleria.get(0);
-		gal.bind('image', function() {
-			$('#galleria').removeClass('galleria-hidden');
-			gal.unbind('image');
-		});
+		// gal.bind('image', function() {
+		// 	$('#galleria').removeClass('galleria-hidden');
+		// 	gal.unbind('image');
+		// });
 		gal.show( $(this).attr('galleria-index') );
+		$('#galleria').removeClass('galleria-hidden');
 	});
 }
 
 // Init Galleria and put it on the page
 function initGalleria(imageData) {
 	// create gallery
-	$('<div id="galleria">').appendTo('body').galleria({
-		// thumbnails: 'lazy',
+	$('<div id="galleria">').addClass('galleria-hidden').appendTo('body');
+
+	Galleria.run('#galleria', {
 		dataSource: imageData,
-		responsive: true
-	}).addClass('galleria-hidden');
+		_bizName: getBizName()
+	}).ready(function() {
+
+		var themePath = chrome.extension.getURL('galleria/themes/hackathon9/');
+		var sprite_classes = [
+			'.galleria-thumb-nav-left',
+			'.galleria-thumb-nav-right',
+			'.galleria-info-link',
+			'.galleria-info-close',
+			'.galleria-image-nav-left',
+			'.galleria-image-nav-right'
+		].join(', ');
+
+		$(sprite_classes).css('background-image', 'url(' + themePath + 'classic-map.png)');
+	});
 
 	// assign click events that open the galleria
 	$('#bizPhotos img').click(function(e) {
