@@ -11,9 +11,12 @@ Galleria.addTheme({
         thumbCrop:  'height',
         imageCrop: false,
         maxScaleRatio: 1,
+        responsive: true,
+        carousel: false,
 
         // set this to false if you want to show the caption all the time:
-        _toggleInfo: true
+        _toggleInfo: true,
+        _bizName: ''
     },
     init: function(options) {
 
@@ -35,6 +38,10 @@ Galleria.addTheme({
         this.append({
             'info' : ['info-link','info-close']
         });
+
+        this.addElement('biz-info');
+        this.$('biz-info').text( options._bizName );
+        this.appendChild('container', 'biz-info');
 
         // cache some stuff
         var info = this.$('info-link,info-close,info-text'),
