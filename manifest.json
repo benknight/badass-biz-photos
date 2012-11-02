@@ -1,9 +1,25 @@
 {
 	"name": "Badass Biz Photos",
 	"version": "0.9",
-	"manifest_version": 2,
+	"manifest_version": 10,
 	"description": "Yelp Hackathon 9.0 project",
-	"browser_action": {
-		"default_icon": "icon.png"
-	}
+	"icons": {
+		"16": "icon.png",
+		"128": "icon.png"
+	},
+	"content_scripts": [
+		{
+			"matches": ["http://*.yelp.com/biz*"],
+			"css": [
+				"badass-biz-photos.css",
+				"galleria/themes/hackathon9/galleria.hackathon9.css"
+			],
+			"js": [
+				"jquery-1.8.2.js",
+				"galleria/galleria-1.2.8.js",
+				"galleria/themes/hackathon9/galleria.hackathon9.js",
+				"badass-biz-photos.js"
+			]
+		}
+	]
 }
