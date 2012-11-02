@@ -9,7 +9,7 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
-	padding: 20px;
+	padding: 40px 70px;
 	background: rgba(0,0,0,.8);
 	/* prevent font smoothing wonkiness */
 	-webkit-transform: translateZ(0);
@@ -35,6 +35,7 @@
 	bottom: 0;
 	left: 0;
 	right: 320px;
+	padding: 0 30px;
 	overflow: hidden;
 	background: black;
 }
@@ -50,12 +51,13 @@
 }
 
 .galleria-thumbnails {
-	height: 125px;
+	height: 100px;
 	overflow: auto !important;
+	background: white;
 }
 
 .expanded .galleria-thumbnails {
-	height: 300px;
+	height: 535px;
 }
 
 .galleria-thumbnails .galleria-image {
@@ -75,9 +77,9 @@
 .galleria-thumbnails-more {
 	position: relative;
 	height: 1.5em;
-	padding: 0 5px;
+	padding: 8px 5px 0 0;
 	margin-bottom: 1em;
-	box-shadow: 0px -10px 20px 10px white;
+	background: white;
 	cursor: pointer;
 }
 
@@ -103,6 +105,11 @@
 	line-height: 2;
 }
 
+.galleria-faux-rating h3 {
+	font-size: 16px;
+	color: #555;
+}
+
 .galleria-faux-rating input {
 	margin-right: 1em;
 }
@@ -116,7 +123,7 @@
 	padding: 15px 10px 0;
 	font-weight: bold;
 	font-size: 22px;
-	color: #555;
+	color: #C41200;
 }
 
 .galleria-close {
@@ -130,11 +137,9 @@
 
 .galleria-counter {
 	position: absolute;
-	bottom: 10px;
+	top: 10px;
 	left: 10px;
-	text-align: right;
 	color: #fff;
-	font: normal 11px/1 arial,sans-serif;
 	z-index: 1;
 }
 
@@ -156,19 +161,23 @@
 	bottom: 0;
 	left: 0;
 	right: 320px;
-	height: 64px;
-	background-color: rgba(0,0,0,.5);
+	height: 85px;
+	background-color: rgba(0, 0, 0, .75);
 }
 
 .galleria-info-text {
 	display: none;
 	padding: 12px 12px 0;
 	color: #fff;
-	text-shadow: 1px 1px 6px rgba(0,0,0,.4)
+	text-shadow: 1px 1px 6px rgba(0, 0, 0, .4)
 }
 
 .galleria-info-text:before {
-	content: url(http://s3-media3.ak.yelpcdn.com/assets/2/www/img/7eb06b6a9db5/gfx/blank_user_small.gif);
+	content: "";
+	display: block;
+	background-image: url(http://lorempixel.com/60/60/people/);
+	width: 60px;
+	height: 60px;
 	float: left;
 	margin-right: 1em;
 }
@@ -184,6 +193,12 @@
 
 .galleria-info-description {
 	margin: 0;
+}
+
+.galleria-info-description .date {
+	display: block;
+	margin-top: 2px;
+	font-size: 11px;
 }
 
 .galleria-info-close {
@@ -240,13 +255,13 @@
 	width: 62px;
 	height: 124px;
 	position: absolute;
-	left: 10px;
+	left: 15px;
 	z-index: 2;
 	background-position: 0 46px;
 }
 .galleria-image-nav-right {
 	left: auto;
-	right: 10px;
+	right: 15px;
 	background-position: -254px 46px;
 	z-index: 2;
 }
@@ -319,5 +334,13 @@
 
 /* Faux Ad.. ICK */
 .galleria-faux-ad {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
 	cursor: default; width: 300px; height: 250px; background-color: #ededed; text-align: center; font: 16px Monaco, Consolas, monospace; line-height: 250px; color: #ccc; text-shadow: 0 1px 1px white; background-image: -webkit-repeating-linear-gradient(-45deg, transparent, transparent 35px, hsla(0, 100%, 100%, 0.33) 35px, hsla(0, 100%, 100%, .33) 70px); background-image: -moz-repeating-linear-gradient(-45deg, transparent, transparent 35px, hsla(0, 100%, 100%, 0.33) 35px, hsla(0, 100%, 100%, 0.33) 70px); background-image: repeating-linear-gradient(-45deg, transparent, transparent 35px, hsla(0, 100%, 100%, 0.33) 35px, hsla(0, 100%, 100%, 0.33) 70px);
+}
+
+.galleria-faux-ad.banner {
+	background: url(http://f.cl.ly/items/3X18052Q2h451K1f0236/Screen%20Shot%202012-11-02%20at%201.28.11%20PM.png) no-repeat;
+	text-indent: -9999px;
 }

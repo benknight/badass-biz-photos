@@ -71,8 +71,9 @@ function processImageData(context) {
 		imageData.push({
 			thumb: $this.find('img.photo-img').attr('src'),
 			image: convertPhotoURI( $this.find('img.photo-img').attr('src'), 'o' ),
-			title: $this.find('.caption p:first-child').html(),
+			title: $this.find('.caption p:first-child a'),
 			description: $this.find('.caption p:nth-child(2)').text()
+				+ '<span class="date">Added 30 days ago</span>'
 		});
 		if ( ! context ) {
 			$this.find('img.photo-img').attr('galleria-index', index);
@@ -91,6 +92,7 @@ function enhanceGridPhotos() {
 
 		// open galleria at this index
 		var gal = Galleria.get(0);
+		// gal.setOption('');
 		// gal.bind('image', function() {
 		// 	$('#galleria').removeClass('galleria-hidden');
 		// 	gal.unbind('image');
@@ -124,11 +126,17 @@ function initGalleria(imageData) {
 	});
 
 	// assign click events that open the galleria
-	$('#bizPhotos img').click(function(e) {
+	$('#bizPhotos img, #slide-viewer img').live('click', function(e) {
 		// prevent page events
 		e.stopPropagation(); e.preventDefault();
 
 		$('#galleria').removeClass('galleria-hidden');
+	});
+
+	$('#galleria').click(function(e) {
+		if ( e.target.id == 'galleria' ) {
+			$('#galleria:visible').addClass('galleria-hidden')
+		}
 	});
 }
 
