@@ -1,12 +1,12 @@
-/** Hide stuff */
-.galleria-hidden,
-.galleria-hidden * {
-	visibility: hidden !important;
-}
+/**
+ * General styles for Badass Biz Photos, mostly just page style rewrites.
+ * All gallery styles are in Galleria theme css.
+ */
+
 
 /** Grid UI */
 
-/* Remove top margin from the first row of photos */
+/* remove top margin from the first row of photos */
 #photo-thumbnails .photo:nth-child(-n+4) {
 	margin-top: 0;
 }
@@ -31,10 +31,10 @@
 	height: 142px;
 }
 
-.biz-photos-page .photo-details-base #selected-photo-frame {
+.photo-details-base #selected-photo-frame {
 	width: 642px;
 }
 
-.biz-photos-page .photo-details-base #selected-photo {
+.photo-details-base #selected-photo {
 	margin-top: 5px;
 }

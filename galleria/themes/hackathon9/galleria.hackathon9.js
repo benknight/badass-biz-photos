@@ -1,35 +1,43 @@
 (function($) {
 
-/*global jQuery, Galleria */
-
 Galleria.addTheme({
 	name: 'hackathon9',
 	author: 'Yelp',
-	css: false, // We load the CSS manually in manifest.json
+	css: false, // we load the CSS manually in manifest.json
 	defaults: {
 		transition: 'fade',
 		thumbCrop:  'height',
 		imageCrop: false,
 		maxScaleRatio: 1,
 		responsive: true,
-		carousel: false,
+		// carousel: false,
 
-		// set this to false if you want to show the caption all the time:
+		// custom options
 		_toggleInfo: false,
-		_bizName: '',
-		_maxThumbs: 9
+		_collectionName: '',
+		_maxThumbs: 3
 	},
 	init: function(options) {
 
 		Galleria.requires(1.28, 'This theme requires Galleria 1.2.8 or later');
 
+		// add custom lightbox-style hide & show
+		Galleria.ready(function(options) {
+			this.hide = function() {
+				$('#galleria').addClass('galleria-hidden')
+				$('html').css('overflow', 'auto')
+			}
+			this.unhide = function() {
+				$('#galleria').removeClass('galleria-hidden')
+				$('html').css('overflow', 'hidden')
+			}
+		})
+
 		// keyboard events
 		this.attachKeyboard({
 			right: this.next,
 			left: this.prev,
-			escape: function() {
-				$('#galleria').addClass('galleria-hidden');
-			}
+			escape: this.hide
 		});
 
 		// add some elements
@@ -38,9 +46,9 @@ Galleria.addTheme({
 			'info' : ['info-link','info-close']
 		});
 
-		this.addElement('biz-info');
-		this.$('biz-info').text( options._bizName );
-		this.appendChild('container', 'biz-info');
+		this.addElement('collection-info');
+		this.$('collection-info').text( options._collectionName );
+		this.appendChild('container', 'collection-info');
 
 		if ( this.getDataLength() > options._maxThumbs ) {
 			this.addElement('thumbnails-more');
@@ -81,7 +89,7 @@ Galleria.addTheme({
 		// Close button
 		this.addElement('close');
 		this.$('close').text('×').click(function() {
-			$('#galleria').addClass('galleria-hidden');
+			Galleria.get(0).hide()
 		});
 		this.appendChild('container', 'close');
 
