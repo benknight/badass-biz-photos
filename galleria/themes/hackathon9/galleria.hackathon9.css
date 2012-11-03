@@ -1,7 +1,18 @@
-/* Galleria Classic Theme 2012-08-07 | https://raw.github.com/aino/galleria/master/LICENSE | (c) Aino */
+/**
+ * Yelp Hackathon 9.0 Galleria Theme
+ * by Benjamin Knight &
+ *
+ * Based on Galleria's classic theme with behavior,
+ * inspired by Facebook's lightbox style photo viewer.
+ */
 
-#galleria-loader{height:1px!important}
+/* lightbox hiding */
+.galleria-hidden,
+.galleria-hidden * {
+	visibility: hidden !important;
+}
 
+/* lightbox page overlay */
 #galleria {
 	z-index: 9999;
 	position: fixed;
@@ -52,26 +63,25 @@
 
 .galleria-thumbnails {
 	height: 100px;
-	overflow: auto !important;
 	background: white;
 }
 
 .expanded .galleria-thumbnails {
 	height: 535px;
+	overflow: auto !important;
 }
 
 .galleria-thumbnails .galleria-image {
-	height: 93px;
-	width: 93px;
-	background: #000;
-	margin: 0 6px 6px 0;
-	border: 1px solid #000;
+	height: 95px;
+	width: 95px;
+	background: #fff;
+	padding: 0 6px 6px 0;
 	float: left;
 	cursor: pointer;
 }
 
 .galleria-thumbnails .galleria-image:nth-child(3n) {
-	margin-right: 0;
+	/*margin-right: 0;*/
 }
 
 .galleria-thumbnails-more {
@@ -114,7 +124,7 @@
 	margin-right: 1em;
 }
 
-.galleria-biz-info {
+.galleria-collection-info {
 	box-sizing: border-box;
 	position: absolute;
 	top: 0;
@@ -213,6 +223,24 @@
 	cursor: pointer;
 	display: none;
 }
+
+/* faux ad */
+.galleria-faux-ad {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+
+	/* sandbox DFP styles */
+	cursor: default; width: 300px; height: 250px; background-color: #ededed; text-align: center; font: 16px Monaco, Consolas, monospace; line-height: 250px; color: #ccc; text-shadow: 0 1px 1px white; background-image: -webkit-repeating-linear-gradient(-45deg, transparent, transparent 35px, hsla(0, 100%, 100%, 0.33) 35px, hsla(0, 100%, 100%, .33) 70px); background-image: -moz-repeating-linear-gradient(-45deg, transparent, transparent 35px, hsla(0, 100%, 100%, 0.33) 35px, hsla(0, 100%, 100%, 0.33) 70px); background-image: repeating-linear-gradient(-45deg, transparent, transparent 35px, hsla(0, 100%, 100%, 0.33) 35px, hsla(0, 100%, 100%, 0.33) 70px);
+}
+
+/* sample graphical ad (Outback Steakhouse) */
+.galleria-faux-ad.banner {
+	background: url(http://f.cl.ly/items/3X18052Q2h451K1f0236/Screen%20Shot%202012-11-02%20at%201.28.11%20PM.png) no-repeat;
+	text-indent: -9999px;
+}
+
+/* nothing beyond this point has been modified (same as Classic Theme) */
 .notouch .galleria-info-close:hover{
 	opacity:1;
 	filter: alpha(opacity=100);
@@ -278,7 +306,7 @@
 .galleria-thumb-nav-left,
 .galleria-thumb-nav-right {
 	cursor: pointer;
-	display: none;
+	display: none !important;
 	background-position: -495px 5px;
 	position: absolute;
 	left: 0;
@@ -330,17 +358,4 @@
 .galleria-image-nav-right {
 	/* background-image: url(classic-map.png); */
 	background-repeat: no-repeat;
-}
-
-/* Faux Ad.. ICK */
-.galleria-faux-ad {
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
-	cursor: default; width: 300px; height: 250px; background-color: #ededed; text-align: center; font: 16px Monaco, Consolas, monospace; line-height: 250px; color: #ccc; text-shadow: 0 1px 1px white; background-image: -webkit-repeating-linear-gradient(-45deg, transparent, transparent 35px, hsla(0, 100%, 100%, 0.33) 35px, hsla(0, 100%, 100%, .33) 70px); background-image: -moz-repeating-linear-gradient(-45deg, transparent, transparent 35px, hsla(0, 100%, 100%, 0.33) 35px, hsla(0, 100%, 100%, 0.33) 70px); background-image: repeating-linear-gradient(-45deg, transparent, transparent 35px, hsla(0, 100%, 100%, 0.33) 35px, hsla(0, 100%, 100%, 0.33) 70px);
-}
-
-.galleria-faux-ad.banner {
-	background: url(http://f.cl.ly/items/3X18052Q2h451K1f0236/Screen%20Shot%202012-11-02%20at%201.28.11%20PM.png) no-repeat;
-	text-indent: -9999px;
 }
