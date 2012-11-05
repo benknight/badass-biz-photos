@@ -8,6 +8,7 @@ var IS_BIZ = !! window.location.pathname.match('/biz/')
 var IS_BIZ_PHOTOS = !! window.location.pathname.match('/biz_photos')
 var IS_USER_PHOTOS = !! window.location.pathname.match('/user_photos')
 
+var addPhotosLink = false
 
 /** Utility Functions */
 
@@ -30,15 +31,21 @@ function getCollectionName() {
 	}
 }
 
-// get Galleria index by photo url or photo enc id
-function getPhotoIndexByURL(photo_url) {
-	// nice to have
+function hideGallery() {
+	$('#galleria').addClass('galleria-hidden')
+	$('html').css('overflow', 'auto')
 }
 
+function showGallery() {
+	$('#galleria').removeClass('galleria-hidden')
+	$('html').css('overflow', 'hidden')
+}
 
 /** Core Extension Stuff */
 
 function badassBizPhotos() {
+
+	$('<div id="galleria" class="galleria-hidden">').appendTo('body')
 
 	// if we're biz_photos page already, yay.
 	if ( IS_BIZ_PHOTOS || IS_USER_PHOTOS ) {
@@ -49,10 +56,10 @@ function badassBizPhotos() {
 		$('.caption, #photo-nav-add').hide()
 		$('#selected-photo').toggle( !! window.location.search.match('select') )
 
+		processImageData(false)
+
 		// do grid enhancements
 		enhanceGridPhotos()
-
-		processImageData(false)
 
 	// if we're on the biz page, get the page in an iframe.
 	} else if ( IS_BIZ ) {
@@ -61,7 +68,24 @@ function badassBizPhotos() {
 		var $slider_link = $('#slide-viewer-all')
 		var $static_link = $('#bizPhotos a')
 
-		$('body').addClass('biz-page')
+		$('body').addClass('biz-page galleria-loading')
+
+		// shim a div over the biz photos UIs on the biz page to hijack click
+		$('<div id="biz-photos-shim">')
+			.appendTo('#bizPhotos, #slide-viewer')
+			.click(function(e) {
+				// prevent page events
+				e.stopPropagation()
+				e.preventDefault()
+				showGallery()
+			}
+		)
+
+		// update the slideshow shim with the current galleria index
+		$('#slide-viewer').bind('DOMSubtreeModified', function(e) {
+			current_index = $(this).find('img:visible').prevAll('img').length
+			$('#biz-photos-shim').data('galleria-index', current_index)
+		})
 
 		if ( $slider_link.length ) {
 			biz_photos_url = $slider_link.attr('href')
@@ -74,6 +98,7 @@ function badassBizPhotos() {
 		// TODO: change this load even to a ready event
 		var iframe = $('<iframe id="biz-photos-iframe" class="offscreen" name="biz-photos-iframe"></iframe>').attr('src', biz_photos_url)
 			.load(function() {
+				$('body').removeClass('galleria-loading')
 				processImageData( $(this).contents() )
 			})
 		$('body').append( iframe )
@@ -96,8 +121,9 @@ function processImageData(context) {
 			description: $this.find('.caption p:nth-child(2)').text() +
 				'<span class="date">Added 30 days ago</span>'
 		})
-		$this.find('img.photo-img').attr('galleria-index', index)
+		$this.find('img.photo-img').data('galleria-index', index)
 	})
+	addPhotosLink = $('#photo-details-header-actions a', context)
 	initGalleria(imageData)
 }
 
@@ -115,24 +141,22 @@ function enhanceGridPhotos() {
 		}
 		// open galleria and page to the photo that was clicked, preventing transition effect
 		var gal = Galleria.get(0)
-		gal.setOptions('transition', false)
 		gal.bind('image', function() {
-			gal.unhide()
-			gal.setOptions('transition', 'fade')
+			showGallery()
 			gal.unbind('image')
 		})
-		gal.show( $(this).attr('galleria-index') )
+		gal.show( $(this).data('galleria-index') )
 	})
 }
 
 // initiate Galleria plugin, put it on the page, and attach events.
 function initGalleria(imageData) {
 	// create hidden galleria div
-	$('<div id="galleria" class="galleria-hidden">').appendTo('body')
 	Galleria.run('#galleria', {
 		dataSource: imageData,
 		_collectionName: getCollectionName(),
 		extend: function() {
+			// css
 			var themePath = chrome.extension.getURL('galleria/themes/hackathon9/')
 			var sprite_classes = [
 				'.galleria-thumb-nav-left',
@@ -143,21 +167,29 @@ function initGalleria(imageData) {
 				'.galleria-image-nav-right'
 			].join()
 			$(sprite_classes).css('background-image', 'url(' + themePath + 'classic-map.png)')
+
+			// add photos link
+			this.$('add-photos-link').html( addPhotosLink )
+
+			// closing
+			this.attachKeyboard({
+				escape: hideGallery
+			})
+			this.addElement('close')
+			this.$('close').text('×').click(function() {
+				hideGallery()
+			})
+			this.appendChild('container', 'close')
 		}
 	})
 
-	// assign click events that open the galleria
-	$('#bizPhotos img, #slide-viewer img').live('click', function(e) {
-		// prevent page events
-		e.stopPropagation()
-		e.preventDefault()
-
-		Galleria.get(0).unhide()
+	$('#biz-photos-shim').click(function() {
+		Galleria.get(0).show( $(this).data('galleria-index') )
 	})
 
 	$('#galleria').click(function(e) {
 		if ( e.target.id == 'galleria' ) {
-			Galleria.get(0).hide();
+			hideGallery()
 		}
 	})
 }
