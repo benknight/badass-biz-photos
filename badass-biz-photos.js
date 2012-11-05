@@ -50,8 +50,6 @@ function badassBizPhotos() {
 	// if we're biz_photos page already, yay.
 	if ( IS_BIZ_PHOTOS || IS_USER_PHOTOS ) {
 
-		$('body').addClass('photos-page')
-
 		// hide stuff
 		$('.caption, #photo-nav-add').hide()
 		$('#selected-photo').toggle( !! window.location.search.match('select') )
@@ -67,8 +65,6 @@ function badassBizPhotos() {
 		var biz_photos_url
 		var $slider_link = $('#slide-viewer-all')
 		var $static_link = $('#bizPhotos a')
-
-		$('body').addClass('biz-page galleria-loading')
 
 		// shim a div over the biz photos UIs on the biz page to hijack click
 		$('<div id="biz-photos-shim">')
@@ -95,13 +91,7 @@ function badassBizPhotos() {
 			return false
 		}
 
-		// TODO: change this load even to a ready event
-		var iframe = $('<iframe id="biz-photos-iframe" class="offscreen" name="biz-photos-iframe"></iframe>').attr('src', biz_photos_url)
-			.load(function() {
-				$('body').removeClass('galleria-loading')
-				processImageData( $(this).contents() )
-			})
-		$('body').append( iframe )
+		$.get(biz_photos_url, processImageData)
 
 	// or we're not on a page this extension is meant to act on.
 	} else {
