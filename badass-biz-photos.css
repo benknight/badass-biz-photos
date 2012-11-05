@@ -3,6 +3,17 @@
  * All gallery styles are in Galleria theme css.
  */
 
+/* shim a div over the biz photos UIs on the biz page to hijack click */
+#slide-viewer div {
+	z-index: 99 !important;
+}
+
+#biz-photos-shim {
+	position: absolute;
+	z-index: 9 !important;
+	top: 0; right: 0; bottom: 0; left: 0;
+	cursor: pointer;
+}
 
 /** Grid UI */
 
