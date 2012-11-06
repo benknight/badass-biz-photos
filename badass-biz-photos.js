@@ -83,6 +83,10 @@ function badassBizPhotos() {
 			$('#biz-photos-shim').data('galleria-index', current_index)
 		})
 
+		$('#slide-viewer #biz-photos-shim').click(function() {
+			Galleria.get(0).show( $(this).data('galleria-index') )
+		})
+
 		if ( $slider_link.length ) {
 			biz_photos_url = $slider_link.attr('href')
 		} else if ( $static_link.length ) {
@@ -171,10 +175,6 @@ function initGalleria(imageData) {
 			})
 			this.appendChild('container', 'close')
 		}
-	})
-
-	$('#biz-photos-shim').click(function() {
-		Galleria.get(0).show( $(this).data('galleria-index') )
 	})
 
 	$('#galleria').click(function(e) {
