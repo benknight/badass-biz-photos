@@ -1,6 +1,6 @@
 /**
  * Yelp Hackathon 9.0 Galleria Theme
- * by Benjamin Knight &
+ * by Benjamin Knight
  *
  * Based on Galleria's classic theme with behavior,
  * inspired by Facebook's lightbox style photo viewer.
@@ -10,6 +10,11 @@
 .galleria-hidden,
 .galleria-hidden * {
 	visibility: hidden !important;
+}
+
+.has-lightbox #double-wrap {
+	position: fixed;
+	width: 100%;
 }
 
 /* lightbox page overlay */
@@ -71,37 +76,38 @@
 
 .galleria-thumbnails-container {
 	position: absolute;
+	z-index: 2;
 	top: 45px;
 	right: 0px;
 	width: 320px;
-	z-index: 2;
-	padding: 10px;
+	overflow: hidden;
+	padding: 10px 10px 30px 10px;
 }
 
 .galleria-thumbnails-container.expanded {
-	bottom: 0;
+	bottom: 270px;
 }
 
 .galleria-thumbnails-list {
 	background: white;
-	height: 130px;
+	height: 95px; /* = thumbnail width */
 }
 
 .expanded .galleria-thumbnails-list {
+	overflow: auto !important;
+	width: 110%;
 	height: 100%;
-	padding-bottom: 30px;
 }
 
 .galleria-thumbnails {
 	position: relative;
-	overflow: hidden;
-	overflow: auto !important;
 	height: 100% !important;
 }
 
 .expanded .galleria-thumbnails {
 	position: static !important;
-	width: auto !important;
+	width: 300px !important;
+	height: auto !important;
 }
 
 .expanded .galleria-thumbnails .galleria-image:nth-child(3n) {
@@ -126,10 +132,10 @@
 .galleria-thumb-links {
 	position: absolute;
 	bottom: 0;
-	left: 0;
-	right: 0;
+	left: 10px;
+	right: 10px;
 	height: 30px;
-	padding: 5px 5px 0 0;
+	padding: 10px 5px 0 0;
 	background: white;
 }
 
@@ -163,10 +169,16 @@
 }
 
 .galleria-faux-rating {
-	padding: 10px 5px;
-	border: solid #eee;
-	border-width: 1px 0 0 0;
+	position: absolute;
+	top: 190px;
+	right: 0;
+	width: 320px;
+	padding: 10px;
 	line-height: 2;
+}
+
+.galleria-faux-rating .rate-photo {
+	border-top: 1px solid #eee;
 }
 
 .galleria-faux-rating h3 {
@@ -183,7 +195,10 @@
 	top: 0;
 	right: 0;
 	width: 320px;
-	padding: 15px 10px 0;
+	padding: 15px 30px 0 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	font-weight: bold;
 	font-size: 22px;
 	color: #C41200;
@@ -218,62 +233,40 @@
 	/* background: url(classic-loader.gif) no-repeat 2px 2px; */
 }
 
-.galleria-info {
+.photo-details {
 	position: absolute;
 	z-index: 2;
 	bottom: 0;
 	left: 0;
-	right: 320px;
-	height: 85px;
+	right: 0;
+	padding: 10px 10px 20px 5px;
+	margin: 0;
+	color: white;
 	background-color: rgba(0, 0, 0, .65);
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
 }
 
-.galleria-info-text {
-	padding: 12px 12px 0;
-	color: #fff;
-	text-shadow: 1px 1px 6px rgba(0, 0, 0, .4)
-}
-
-.galleria-info-text:before {
-	content: "";
-	display: block;
-	background-image: url(http://lorempixel.com/60/60/people/);
-	width: 60px;
-	height: 60px;
+.photo-details .avatar {
 	float: left;
 	margin-right: 1em;
 }
 
-.galleria-info-title {
-	font-size: 19px;
-	margin: 0;
-}
-
-.galleria-info-title a {
+.photo-details a {
 	font-weight: bold;
 }
 
-.galleria-info-description {
+.photo-details p {
 	margin: 0;
 }
 
-.galleria-info-description .date {
+.photo-details .user-display-name {
+	font-size: 19px;
+}
+
+.photo-details .time-uploaded {
 	display: block;
 	margin-top: 2px;
 	font-size: 11px;
-}
-
-.galleria-info-close {
-	width: 9px;
-	height: 9px;
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	background-position: -753px -11px;
-	opacity: .5;
-	filter: alpha(opacity=50);
-	cursor: pointer;
-	display: none;
 }
 
 /* faux ad */

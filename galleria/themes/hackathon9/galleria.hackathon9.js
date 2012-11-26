@@ -6,13 +6,14 @@ Galleria.addTheme({
 	css: false, // we load the CSS manually in manifest.json
 	defaults: {
 		transition: false,
-		thumbCrop:  'height',
+		thumbCrop: 'height',
 		imageCrop: false,
 		maxScaleRatio: 1,
-		responsive: true,
+		layerFollow: false,
+		showInfo: false,
+		thumbnails: 'lazy',
 
 		// custom options
-		_toggleInfo: false,
 		_collectionName: 'Photos',
 		_maxThumbs: 3
 	},
@@ -33,7 +34,7 @@ Galleria.addTheme({
 
 		// photo actions below thumbnails
 		this.addElement('thumb-links')
-		this.appendChild('thumbnails-list', 'thumb-links')
+		this.appendChild('thumbnails-container', 'thumb-links')
 
 		// toggle more/less link
 		this.addElement('more-link')
@@ -73,7 +74,7 @@ Galleria.addTheme({
 				'</label>',
 			'</div>'
 		].join(''))
-		this.appendChild('thumbnails-container', 'faux-rating')
+		this.appendChild('container', 'faux-rating')
 
 		// fake ad
 		this.addElement('faux-ad')
@@ -83,7 +84,10 @@ Galleria.addTheme({
 		// idle states
 		this.addIdleState( this.get('image-nav-left'), { left: -50 })
 		this.addIdleState( this.get('image-nav-right'), { right: -50 })
-		this.addIdleState( this.get('counter'), { opacity: 0 })
+		this.addIdleState( this.get('counter'), { opacity: 0.5 })
+
+		// lazy load thumbs
+		this.lazyLoadChunks(10)
 	}
 })
 

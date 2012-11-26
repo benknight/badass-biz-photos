@@ -19,6 +19,7 @@
 			],
 			"js": [
 				"jquery-1.8.2.js",
+				"jquery.timeago.js",
 				"galleria/galleria-1.2.8.js",
 				"galleria/themes/hackathon9/galleria.hackathon9.js",
 				"badass-biz-photos.js"
