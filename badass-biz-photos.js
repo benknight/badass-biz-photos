@@ -1,135 +1,179 @@
+(function($) {
+
 // require jQuery & Galleria
 if ( ! window.jQuery || ! window.Galleria ) {
 	return false
 }
 
 // tell me what page I'm on
-var IS_BIZ = !! window.location.pathname.match('/biz/')
-var IS_BIZ_PHOTOS = !! window.location.pathname.match('/biz_photos')
-var IS_USER_PHOTOS = !! window.location.pathname.match('/user_photos')
+var is_biz = !! window.location.pathname.match('/biz/')
+var is_biz_photos = !! window.location.pathname.match('/biz_photos')
+var is_user_photos = !! window.location.pathname.match('/user_photos')
 
-var addPhotosLink = false
-
-/** Utility Functions */
+/**
+ * Utility Functions
+ */
 
 // convert a photo URI to a different size
 function convertPhotoURI(photo_uri, to_size) {
-	var re = new RegExp("\/(o|l|m|s|xs|ls|ms|ss|xss|30s|60s|120).jpg")
+	var re = /\/(o|l|m|s|xs|ls|ms|ss|xss|30s|60s|120).jpg/
 	return photo_uri.replace(re, '/' + to_size + '.jpg')
 }
 
 // get the collection name based on page
 function getCollectionName() {
-	if ( IS_BIZ ) {
+	if ( is_biz ) {
 		return $('h1').text()
 	}
-	if ( IS_BIZ_PHOTOS ) {
+	if ( is_biz_photos ) {
 		return $('h2 a').text().replace(':', '')
 	}
-	if ( IS_USER_PHOTOS ) {
+	if ( is_user_photos ) {
 		return $('h2').text()
 	}
 }
 
+function get_biz_id_from_url(url, re) {
+		var matches = url.match(re)
+		if ( matches ) {
+			return matches[1]
+		} else {
+			return false
+		}
+}
+
 function hideGallery() {
 	$('#galleria').addClass('galleria-hidden')
-	$('html').css('overflow', 'auto')
+	$('html').css('overflow', '');
 }
 
 function showGallery() {
 	$('#galleria').removeClass('galleria-hidden')
-	$('html').css('overflow', 'hidden')
+	$('html').css('overflow', 'hidden');
 }
 
-/** Core Extension Stuff */
+/**
+ * Core Extension Stuff
+ */
 
 function badassBizPhotos() {
 
 	$('<div id="galleria" class="galleria-hidden">').appendTo('body')
 
-	// if we're biz_photos page already, yay.
-	if ( IS_BIZ_PHOTOS || IS_USER_PHOTOS ) {
+	if ( is_biz_photos || is_biz ) {
 
-		// hide stuff
-		$('.caption, #photo-nav-add').hide()
-		$('#selected-photo').toggle( !! window.location.search.match('select') )
+		var add_photos_url, biz_id
 
-		processImageData(false)
+		if ( is_biz_photos ) {
 
-		// do grid enhancements
-		enhanceGridPhotos()
+			// hide stuff
+			$('.caption, #photo-nav-add').hide()
+			$('#selected-photo').toggle( !! window.location.search.match('select') )
 
-	// if we're on the biz page, get the page in an iframe.
-	} else if ( IS_BIZ ) {
+			// do grid enhancements
+			enhanceGridPhotos()
 
-		var biz_photos_url
-		var $slider_link = $('#slide-viewer-all')
-		var $static_link = $('#bizPhotos a')
-
-		// shim a div over the biz photos UIs on the biz page to hijack click
-		$('<div id="biz-photos-shim">')
-			.appendTo('#bizPhotos, #slide-viewer')
-			.click(function(e) {
-				// prevent page events
-				e.stopPropagation()
-				e.preventDefault()
-				showGallery()
-			}
-		)
-
-		// update the slideshow shim with the current galleria index
-		$('#slide-viewer').bind('DOMSubtreeModified', function(e) {
-			current_index = $(this).find('img:visible').prevAll('img').length
-			$('#biz-photos-shim').data('galleria-index', current_index)
-		})
-
-		$('#slide-viewer #biz-photos-shim').click(function() {
-			Galleria.get(0).show( $(this).data('galleria-index') )
-		})
-
-		if ( $slider_link.length ) {
-			biz_photos_url = $slider_link.attr('href')
-		} else if ( $static_link.length ) {
-			biz_photos_url = $static_link.attr('href')
-		} else {
-			return false
+			add_photos_url = $('#photo-details-header-actions a').attr('href')
 		}
 
-		$.get(biz_photos_url, processImageData)
+		if ( is_biz ) {
 
-	// or we're not on a page this extension is meant to act on.
-	} else {
-		return false
+			// shim a div over the biz photos UIs on the biz page to hijack click
+			$('<div id="biz-photos-shim">').appendTo('#slide-viewer')
+			$('#biz-photos-shim, #bizPhotos img')
+				.click(function(e) {
+					// prevent page events
+					e.stopPropagation()
+					e.preventDefault()
+					showGallery()
+				}
+			)
+
+			// update the slideshow shim with the current galleria index
+			$('#slide-viewer').bind('DOMSubtreeModified', function(e) {
+				current_index = $(this).find('img:visible').prevAll('img').length
+				$('#biz-photos-shim').data('galleria-index', current_index)
+			})
+			$('#slide-viewer #biz-photos-shim').click(function() {
+				Galleria.get(0).show( $(this).data('galleria-index') )
+			})
+
+			add_photos_url = $('.add-biz-photo, #slide-viewer-add-photo').attr('href')
+		}
+
+		var re = /biz_user_photos\/([\w\-]+)\/upload/
+		biz_id = get_biz_id_from_url(add_photos_url, re)
+
+		if ( ! biz_id ) {
+			throw new Error('No biz ID found on page.')
+		}
+
+		$.get(
+			'http://www.yelp.com/biz_photos/' + biz_id + '/slice/0/999',
+			processJSONData
+		)
 	}
+
+	// handle user photos
+	if ( is_user_photos ) {
+		// do something different...
+		return
+	}
+
+	return false
 }
 
-// take a photo DOM and process it for photos
-function processImageData(context) {
+function processJSONData(data) {
 	var imageData = []
-	$('#photo-thumbnails .photo', context).each(function(index) {
+	$.each(data.photos, function() {
+		var photo = this
+		imageData.push({
+			thumb: convertPhotoURI(photo.uri, 'ms'),
+			image: convertPhotoURI(photo.uri, 'o'),
+			layer: [
+				'<div class="photo-details">',
+					'<img class="avatar" src="' + convertPhotoURI(photo.user.primary_photo, 'ms') +
+						'" width="60" height="60" alt="Photo of ' + photo.user.display_name + '">',
+					'<p class="user-display-name">',
+						'<a href="' + photo.user.user_uri + '">',
+							photo.user.display_name,
+						'</a>',
+					'</p>',
+					'<p class="photo-caption">' + photo.photo_caption + '</p>',
+					'<p class="time-uploaded">Uploaded ' + $.timeago( photo.time_uploaded ) + '</p>',
+				'</div>'
+			].join('')
+		})
+	})
+	initGalleria(imageData)
+}
+
+// take a photo page DOM (e.g. /biz_photos or /user_photos) and process it for photos
+function processDOMData(dom) {
+	var imageData = []
+	$('#photo-thumbnails .photo', dom).each(function(index) {
 		$this = $(this)
 		imageData.push({
 			thumb: $this.find('img.photo-img').attr('src'),
 			image: convertPhotoURI( $this.find('img.photo-img').attr('src'), 'o' ),
 			title: $this.find('.caption p:first-child a'),
-			description: $this.find('.caption p:nth-child(2)').text() +
-				'<span class="date">Added 30 days ago</span>'
+			description: $this.find('.caption p:nth-child(2)').text()
 		})
-		$this.find('img.photo-img').data('galleria-index', index)
 	})
-	addPhotosLink = $('#photo-details-header-actions a', context)
 	initGalleria(imageData)
 }
 
 function enhanceGridPhotos() {
 	// convert 100x100 photos to 250x250
 	$('.photos img.photo-img').attr('src', function(index, attr) {
+
+		$(this).data('galleria-index', index)
 		return convertPhotoURI(attr, 'ls')
 
 	// add click handler to grid so that it opens Galleria at the specified index
 	}).click(function(e) {
 		// prevent user_photos from reloading the page
-		if ( IS_USER_PHOTOS || IS_BIZ_PHOTOS ) {
+		if ( is_user_photos ) {
 			e.stopPropagation()
 			e.preventDefault()
 		}
@@ -162,9 +206,6 @@ function initGalleria(imageData) {
 			].join()
 			$(sprite_classes).css('background-image', 'url(' + themePath + 'classic-map.png)')
 
-			// add photos link
-			this.$('add-photos-link').html( addPhotosLink )
-
 			// closing
 			this.attachKeyboard({
 				escape: hideGallery
@@ -178,12 +219,13 @@ function initGalleria(imageData) {
 	})
 
 	$('#galleria').click(function(e) {
-		if ( e.target.id == 'galleria' ) {
+		if ( e.target == this ) {
 			hideGallery()
 		}
 	})
 }
 
 // do do that voodoo that you do
-// TODO: namespace this extension as a class
-badassBizPhotos()
+$(document).ready( badassBizPhotos )
+
+}(jQuery))
