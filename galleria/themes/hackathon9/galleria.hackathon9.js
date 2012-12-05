@@ -11,7 +11,8 @@ Galleria.addTheme({
 		maxScaleRatio: 1,
 		layerFollow: false,
 		showInfo: false,
-		thumbnails: 'lazy',
+		showCounter: false,
+		//thumbnails: 'lazy',
 
 		// custom options
 		_collectionName: 'Photos',
@@ -74,7 +75,7 @@ Galleria.addTheme({
 				'</label>',
 			'</div>'
 		].join(''))
-		this.appendChild('container', 'faux-rating')
+		//this.appendChild('container', 'faux-rating')
 
 		// fake ad
 		this.addElement('faux-ad')
