@@ -17,6 +17,13 @@
 
 /** Grid UI */
 
+/* hide stuff */
+.caption,
+#photo-nav-add,
+#selected-photo {
+	display: none;
+}
+
 /* remove top margin from the first row of photos */
 #photo-thumbnails .photo:nth-child(-n+4) {
 	margin-top: 0;

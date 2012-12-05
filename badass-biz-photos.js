@@ -1,14 +1,20 @@
-(function($) {
-
 // require jQuery & Galleria
 if ( ! window.jQuery || ! window.Galleria ) {
 	return false
 }
 
-// tell me what page I'm on
+
+/**
+ * Variables
+ */
+
 var is_biz = !! window.location.pathname.match('/biz/')
 var is_biz_photos = !! window.location.pathname.match('/biz_photos')
 var is_user_photos = !! window.location.pathname.match('/user_photos')
+var biz_id                                  // keep track of the biz id
+var photo_set_length = is_biz ? 30 : 100    // how many photos to load at a time
+var all_photos_loaded = false               // flag this if we've loaded all the biz photos
+
 
 /**
  * Utility Functions
@@ -20,7 +26,7 @@ function convertPhotoURI(photo_uri, to_size) {
 	return photo_uri.replace(re, '/' + to_size + '.jpg')
 }
 
-// get the collection name based on page
+// scrape the the page for the gallery name
 function getCollectionName() {
 	if ( is_biz ) {
 		return $('h1').text()
@@ -33,6 +39,7 @@ function getCollectionName() {
 	}
 }
 
+// take an regex and apply it to a url
 function get_biz_id_from_url(url, re) {
 		var matches = url.match(re)
 		if ( matches ) {
@@ -42,32 +49,31 @@ function get_biz_id_from_url(url, re) {
 		}
 }
 
+// lightbox show & hide
 function hideGallery() {
 	$('#galleria').addClass('galleria-hidden')
-	$('html').css('overflow', '');
+	$('html').css('overflow', '')
 }
 
 function showGallery() {
 	$('#galleria').removeClass('galleria-hidden')
-	$('html').css('overflow', 'hidden');
+	$('html').css('overflow', 'hidden')
 }
+
 
 /**
  * Core Extension Stuff
  */
 
 function badassBizPhotos() {
-
+	// create the Galleria container and append it to the body
 	$('<div id="galleria" class="galleria-hidden">').appendTo('body')
 
 	if ( is_biz_photos || is_biz ) {
-
-		var add_photos_url, biz_id
+		var add_photos_url
 
 		if ( is_biz_photos ) {
-
 			// hide stuff
-			$('.caption, #photo-nav-add').hide()
 			$('#selected-photo').toggle( !! window.location.search.match('select') )
 
 			// do grid enhancements
@@ -77,7 +83,6 @@ function badassBizPhotos() {
 		}
 
 		if ( is_biz ) {
-
 			// shim a div over the biz photos UIs on the biz page to hijack click
 			$('<div id="biz-photos-shim">').appendTo('#slide-viewer')
 			$('#biz-photos-shim, #bizPhotos img')
@@ -108,44 +113,121 @@ function badassBizPhotos() {
 			throw new Error('No biz ID found on page.')
 		}
 
-		$.get(
-			'http://www.yelp.com/biz_photos/' + biz_id + '/slice/0/999',
-			processJSONData
-		)
+		getBizPhotos(0, photo_set_length, true)
 	}
 
 	// handle user photos
 	if ( is_user_photos ) {
-		// do something different...
-		return
-	}
+		// scrape dom for photos
+		initGalleria( processDOMData(false) )
 
-	return false
+		// do grid enhancements
+		enhanceGridPhotos()
+	}
 }
 
-function processJSONData(data) {
-	var imageData = []
-	$.each(data.photos, function() {
-		var photo = this
-		imageData.push({
-			thumb: convertPhotoURI(photo.uri, 'ms'),
-			image: convertPhotoURI(photo.uri, 'o'),
-			layer: [
-				'<div class="photo-details">',
-					'<img class="avatar" src="' + convertPhotoURI(photo.user.primary_photo, 'ms') +
-						'" width="60" height="60" alt="Photo of ' + photo.user.display_name + '">',
-					'<p class="user-display-name">',
-						'<a href="' + photo.user.user_uri + '">',
-							photo.user.display_name,
-						'</a>',
-					'</p>',
-					'<p class="photo-caption">' + photo.photo_caption + '</p>',
-					'<p class="time-uploaded">Uploaded ' + $.timeago( photo.time_uploaded ) + '</p>',
-				'</div>'
-			].join('')
-		})
+function getBizPhotos(index, length, first_run) {
+	var imageData = first_run ? [] : Galleria.get(0)
+
+	// do not proceed if we have already loaded all biz photos
+	if ( all_photos_loaded ) {
+		return false
+	}
+
+	// add loading indicator
+	$('#galleria').addClass('galleria-loading')
+
+	$.get(
+		'http://www.yelp.com/biz_photos/' + biz_id + '/slice/' + index + '/' + length,
+		function(data) {
+			// if the number of photos returned is less than the set length then we
+			// can assume we've loaded all the photos.
+			all_photos_loaded = data.photos.length < length
+
+			// process data
+			$.each(data.photos, function() {
+				var photo = this
+				imageData.push({
+					thumb: convertPhotoURI(photo.uri, 'ms'),
+					image: convertPhotoURI(photo.uri, 'o'),
+					layer: [
+						'<div class="photo-details">',
+							'<img class="avatar" src="' + convertPhotoURI(photo.user.primary_photo, 'ms') +
+								'" width="60" height="60" alt="Photo of ' + photo.user.display_name + '">',
+							'<p class="user-display-name">',
+								'<a href="' + photo.user.user_uri + '">',
+									photo.user.display_name,
+								'</a>',
+							'</p>',
+							'<p class="photo-caption">' + photo.photo_caption + '</p>',
+							'<p class="time-uploaded">Uploaded ' + $.timeago( photo.time_uploaded ) + '</p>',
+						'</div>'
+					].join('')
+				})
+			})
+			if ( first_run ) {
+				initGalleria(imageData)
+			}
+			// add loading
+			$('#galleria').removeClass('galleria-loading')
+		}
+	)
+}
+
+// initiate Galleria plugin, put it on the page, and attach events.
+function initGalleria(data) {
+	Galleria.run('#galleria', {
+		_collectionName: getCollectionName(),
+		dataSource: data,
+		extend: function() {
+			// css
+			var themePath = chrome.extension.getURL('galleria/themes/hackathon9/')
+			var sprite_classes = [
+				'.galleria-thumb-nav-left',
+				'.galleria-thumb-nav-right',
+				'.galleria-info-link',
+				'.galleria-info-close',
+				'.galleria-image-nav-left',
+				'.galleria-image-nav-right'
+			].join()
+			$(sprite_classes).css('background-image', 'url(' + themePath + 'classic-map.png)')
+
+			// loading
+			if ( ! ( is_user_photos || this.getDataLength() < photo_set_length ) ) {
+				this.bind('image', function() {
+					// get another set
+					if ( this.getDataLength() - this.getIndex() < 10 ) {
+						getBizPhotos( this.getDataLength(), this.getDataLength() + photo_set_length, false )
+					}
+				})
+
+				// infinite scroll-like effect
+				$('.galleria-thumbnails-list').bind('scroll', function() {
+					var is_expanded = $('.galleria-thumbnails-container').is('.expanded');
+					var pixels_from_bottom = $('.galleria-thumbnails').height() -  $(this).scrollTop() - $(this).height();
+					if ( is_expanded && pixels_from_bottom < 100 ) {
+						var g = Galleria.get(0)
+						getBizPhotos( g.getDataLength(), g.getDataLength() + photo_set_length, false )
+					}
+				});
+			}
+
+			// lightbox closing
+			this.attachKeyboard({
+				escape: hideGallery
+			})
+			this.addElement('close')
+			this.$('close').text('×').click(function() {
+				hideGallery()
+			})
+			this.appendChild('container', 'close')
+			$('#galleria').click(function(e) {
+				if ( e.target == this ) {
+					hideGallery()
+				}
+			})
+		}
 	})
-	initGalleria(imageData)
 }
 
 // take a photo page DOM (e.g. /biz_photos or /user_photos) and process it for photos
@@ -160,25 +242,20 @@ function processDOMData(dom) {
 			description: $this.find('.caption p:nth-child(2)').text()
 		})
 	})
-	initGalleria(imageData)
+	return imageData
 }
 
 function enhanceGridPhotos() {
 	// convert 100x100 photos to 250x250
 	$('.photos img.photo-img').attr('src', function(index, attr) {
-
 		$(this).data('galleria-index', index)
 		return convertPhotoURI(attr, 'ls')
 
 	// add click handler to grid so that it opens Galleria at the specified index
 	}).click(function(e) {
-		// prevent user_photos from reloading the page
-		if ( is_user_photos ) {
-			e.stopPropagation()
-			e.preventDefault()
-		}
-		// open galleria and page to the photo that was clicked, preventing transition effect
 		var gal = Galleria.get(0)
+		e.stopPropagation()
+		e.preventDefault()
 		gal.bind('image', function() {
 			showGallery()
 			gal.unbind('image')
@@ -187,45 +264,5 @@ function enhanceGridPhotos() {
 	})
 }
 
-// initiate Galleria plugin, put it on the page, and attach events.
-function initGalleria(imageData) {
-	// create hidden galleria div
-	Galleria.run('#galleria', {
-		dataSource: imageData,
-		_collectionName: getCollectionName(),
-		extend: function() {
-			// css
-			var themePath = chrome.extension.getURL('galleria/themes/hackathon9/')
-			var sprite_classes = [
-				'.galleria-thumb-nav-left',
-				'.galleria-thumb-nav-right',
-				'.galleria-info-link',
-				'.galleria-info-close',
-				'.galleria-image-nav-left',
-				'.galleria-image-nav-right'
-			].join()
-			$(sprite_classes).css('background-image', 'url(' + themePath + 'classic-map.png)')
-
-			// closing
-			this.attachKeyboard({
-				escape: hideGallery
-			})
-			this.addElement('close')
-			this.$('close').text('×').click(function() {
-				hideGallery()
-			})
-			this.appendChild('container', 'close')
-		}
-	})
-
-	$('#galleria').click(function(e) {
-		if ( e.target == this ) {
-			hideGallery()
-		}
-	})
-}
-
 // do do that voodoo that you do
 $(document).ready( badassBizPhotos )
-
-}(jQuery))
