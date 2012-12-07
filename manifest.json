@@ -1,6 +1,6 @@
 {
 	"name": "Badass Biz Photos",
-	"version": "0.9.2",
+	"version": "0.9.3",
 	"manifest_version": 2,
 	"description": "Yelp Hackathon 9.0 project",
 	"icons": {
@@ -20,6 +20,7 @@
 			"js": [
 				"jquery-1.8.2.js",
 				"jquery.timeago.js",
+				"jquery.smartscroll.js",
 				"galleria/galleria-1.2.8.js",
 				"galleria/themes/hackathon9/galleria.hackathon9.js",
 				"badass-biz-photos.js"
