@@ -65,6 +65,7 @@ function showGallery() {
  * Core Extension Stuff
  */
 
+// the extension's "controller" function which decides how to handle different pages
 function badassBizPhotos() {
 	// create the Galleria container and append it to the body
 	$('<div id="galleria" class="galleria-hidden">').appendTo('body')
@@ -127,7 +128,7 @@ function badassBizPhotos() {
 }
 
 function getBizPhotos(index, length, first_run) {
-	var imageData = first_run ? [] : Galleria.get(0)
+	var imageDataObj = first_run ? [] : Galleria.get(0)
 
 	// do not proceed if we have already loaded all biz photos
 	if ( all_photos_loaded ) {
@@ -138,7 +139,7 @@ function getBizPhotos(index, length, first_run) {
 	$('#galleria').addClass('galleria-loading')
 
 	$.get(
-		'http://www.yelp.com/biz_photos/' + biz_id + '/slice/' + index + '/' + length,
+		'http://www.yelp.com/biz_photos/' + biz_id + '/slice/' + index + '/' + (index + length),
 		function(data) {
 			// if the number of photos returned is less than the set length then we
 			// can assume we've loaded all the photos.
@@ -147,7 +148,7 @@ function getBizPhotos(index, length, first_run) {
 			// process data
 			$.each(data.photos, function() {
 				var photo = this
-				imageData.push({
+				imageDataObj.push({
 					thumb: convertPhotoURI(photo.uri, 'ms'),
 					image: convertPhotoURI(photo.uri, 'o'),
 					layer: [
@@ -166,9 +167,9 @@ function getBizPhotos(index, length, first_run) {
 				})
 			})
 			if ( first_run ) {
-				initGalleria(imageData)
+				initGalleria(imageDataObj)
 			}
-			// add loading
+			// remove loading
 			$('#galleria').removeClass('galleria-loading')
 		}
 	)
@@ -180,6 +181,10 @@ function initGalleria(data) {
 		_collectionName: getCollectionName(),
 		dataSource: data,
 		extend: function() {
+
+			// cache a reference to this
+			var g = this
+
 			// css
 			var themePath = chrome.extension.getURL('galleria/themes/hackathon9/')
 			var sprite_classes = [
@@ -193,21 +198,24 @@ function initGalleria(data) {
 			$(sprite_classes).css('background-image', 'url(' + themePath + 'classic-map.png)')
 
 			// loading
-			if ( ! ( is_user_photos || this.getDataLength() < photo_set_length ) ) {
+			if ( ! ( is_user_photos || all_photos_loaded ) ) {
 				this.bind('image', function() {
+					// don't call this multiple times
+					if ( $('#galleria').is('.galleria-loading') ) {
+						return false
+					}
 					// get another set
 					if ( this.getDataLength() - this.getIndex() < 10 ) {
-						getBizPhotos( this.getDataLength(), this.getDataLength() + photo_set_length, false )
+						getBizPhotos( this.getDataLength(), photo_set_length, false )
 					}
 				})
 
 				// infinite scroll-like effect
-				$('.galleria-thumbnails-list').bind('scroll', function() {
-					var is_expanded = $('.galleria-thumbnails-container').is('.expanded');
+				$('.galleria-thumbnails-list').bind('smartscroll', function() {
+					var is_expanded = $('.galleria-thumbnails-container').is('.expanded')
 					var pixels_from_bottom = $('.galleria-thumbnails').height() -  $(this).scrollTop() - $(this).height();
 					if ( is_expanded && pixels_from_bottom < 100 ) {
-						var g = Galleria.get(0)
-						getBizPhotos( g.getDataLength(), g.getDataLength() + photo_set_length, false )
+						getBizPhotos( g.getDataLength(), photo_set_length, false )
 					}
 				});
 			}
@@ -230,7 +238,9 @@ function initGalleria(data) {
 	})
 }
 
-// take a photo page DOM (e.g. /biz_photos or /user_photos) and process it for photos
+// take a photo page DOM and process it for photos as an alternative ot making
+// ajax calls.  The extension originally did this for all photos, now it's
+// maintained for just /user_photos which has no ajax endpoint.
 function processDOMData(dom) {
 	var imageData = []
 	$('#photo-thumbnails .photo', dom).each(function(index) {
@@ -245,6 +255,7 @@ function processDOMData(dom) {
 	return imageData
 }
 
+// do some nifty UI enhancements on *_photos pages
 function enhanceGridPhotos() {
 	// convert 100x100 photos to 250x250
 	$('.photos img.photo-img').attr('src', function(index, attr) {
@@ -253,14 +264,14 @@ function enhanceGridPhotos() {
 
 	// add click handler to grid so that it opens Galleria at the specified index
 	}).click(function(e) {
-		var gal = Galleria.get(0)
+		var g = Galleria.get(0)
 		e.stopPropagation()
 		e.preventDefault()
-		gal.bind('image', function() {
+		g.bind('image', function() {
 			showGallery()
-			gal.unbind('image')
+			g.unbind('image')
 		})
-		gal.show( $(this).data('galleria-index') )
+		g.show( $(this).data('galleria-index') )
 	})
 }
 

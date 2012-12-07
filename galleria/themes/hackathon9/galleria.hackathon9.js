@@ -22,6 +22,9 @@ Galleria.addTheme({
 
 		Galleria.requires(1.28, 'This theme requires Galleria 1.2.8 or later')
 
+		// cache a reference to this
+		var g = this
+
 		// keyboard events
 		this.attachKeyboard({
 			right: this.next,
@@ -48,6 +51,8 @@ Galleria.addTheme({
 			more.html('<a class="more">▼ Show More</a><a class="less">▲ Show Less</a>')
 			more.bind('click', function() {
 				thumbs_container.toggleClass('expanded')
+				g._carousel.update()
+				g._carousel.follow( g.getIndex() )
 			})
 			this.appendChild('thumb-links', 'more-link')
 		}
