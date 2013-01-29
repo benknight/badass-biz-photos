@@ -26,7 +26,7 @@
 	bottom: 0;
 	left: 0;
 	padding: 40px 70px;
-	background: rgba(0,0,0,.8);
+	background: rgba(0,0,0,.75);
 	overflow: auto;
 	font-size: 14px;
 	text-align: center;
@@ -51,6 +51,7 @@
 	overflow: hidden;
 	background: white;
 	text-align: left;
+	box-shadow: 0 0 100px black;
 }
 
 .galleria-container a {

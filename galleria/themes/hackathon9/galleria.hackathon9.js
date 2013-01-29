@@ -11,7 +11,7 @@ Galleria.addTheme({
 		maxScaleRatio: 1,
 		layerFollow: false,
 		showInfo: false,
-		showCounter: false,
+		//showCounter: false,
 		//thumbnails: 'lazy',
 
 		// custom options

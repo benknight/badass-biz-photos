@@ -139,7 +139,7 @@ function getBizPhotos(index, length, first_run) {
 	$('#galleria').addClass('galleria-loading')
 
 	$.get(
-		'http://www.yelp.com/biz_photos/' + biz_id + '/slice/' + index + '/' + (index + length),
+		'/biz_photos/' + biz_id + '/slice/' + index + '/' + (index + length),
 		function(data) {
 			// if the number of photos returned is less than the set length then we
 			// can assume we've loaded all the photos.
