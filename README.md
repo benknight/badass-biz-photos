@@ -10,7 +10,7 @@ Badass Biz Photos is a Chrome extension which adds a new biz photo UI to yelp.co
 
 * Uses high-resolution business photography (up to 1000x1000).  The current Yelp.com UI uses photos at a max of 600x600.
 * Two thumbnail navigation modes: carousel and grid.
-* Works on user_photos too!
+* Works on /biz, /biz_photos, and /user_details.
 
 ## Roadmap
 
