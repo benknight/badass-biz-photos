@@ -148,21 +148,18 @@ function getBizPhotos(index, length, first_run) {
 			// process data
 			$.each(data.photo_slice, function() {
 				var photo = this
+				var $user_passport = $(data.body).filter('#pur-' + photo.photo_id)
 				imageDataObj.push({
 					thumb: convertPhotoURI(photo.uri, 'ms'),
 					image: convertPhotoURI(photo.uri, 'o'),
 					layer: [
 						'<div class="photo-details">',
-							// '<img class="avatar" src="',
-							// 	 convertPhotoURI(photo.user.primary_photo, 'ms'),
-							// 	'" width="60" height="60" alt="Photo of ',
-							// 	photo.user.display_name,
-							// '">',
-							// '<p class="user-display-name">',
-							// 	'<a href="' + photo.user.user_uri + '">',
-							// 		photo.user.display_name,
-							// 	'</a>',
-							// '</p>',
+							'<div class="avatar">',
+								$user_passport.find('.photo-img')[0].outerHTML,
+							'</div>',
+							'<p class="user-display-name">',
+								$user_passport.find('#photo-uploader-uri')[0].outerHTML,
+							'</p>',
 							'<p class="photo-caption">' + photo.photo_caption + '</p>',
 							'<p class="time-uploaded">Uploaded ' + $.timeago( photo.time_uploaded ) + '</p>',
 						'</div>'

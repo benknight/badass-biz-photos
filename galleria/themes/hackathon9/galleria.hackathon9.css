@@ -273,6 +273,11 @@
 	margin-right: 1em;
 }
 
+.photo-details .avatar img {
+	width: 60px;
+	height: 60px;
+}
+
 .photo-details a {
 	font-weight: bold;
 }
