@@ -48,6 +48,9 @@ Galleria.addTheme({
 			var more = this.$('more-link'),
 			    thumbs_container = this.$('thumbnails-container')
 
+			// initialize to being expanded
+			thumbs_container.addClass('expanded');
+
 			more.html('<a class="more">▼ Show More</a><a class="less">▲ Show Less</a>')
 			more.bind('click', function() {
 				thumbs_container.toggleClass('expanded')
@@ -85,7 +88,7 @@ Galleria.addTheme({
 		// fake ad
 		this.addElement('faux-ad')
 		this.$('faux-ad').text('300x250')
-		this.appendChild('container', 'faux-ad')
+		//this.appendChild('container', 'faux-ad')
 
 		// idle states
 		this.addIdleState( this.get('image-nav-left'), { left: -50 })

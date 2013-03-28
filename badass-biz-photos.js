@@ -143,23 +143,26 @@ function getBizPhotos(index, length, first_run) {
 		function(data) {
 			// if the number of photos returned is less than the set length then we
 			// can assume we've loaded all the photos.
-			all_photos_loaded = data.photos.length < length
+			all_photos_loaded = data.photo_slice.length < length
 
 			// process data
-			$.each(data.photos, function() {
+			$.each(data.photo_slice, function() {
 				var photo = this
 				imageDataObj.push({
 					thumb: convertPhotoURI(photo.uri, 'ms'),
 					image: convertPhotoURI(photo.uri, 'o'),
 					layer: [
 						'<div class="photo-details">',
-							'<img class="avatar" src="' + convertPhotoURI(photo.user.primary_photo, 'ms') +
-								'" width="60" height="60" alt="Photo of ' + photo.user.display_name + '">',
-							'<p class="user-display-name">',
-								'<a href="' + photo.user.user_uri + '">',
-									photo.user.display_name,
-								'</a>',
-							'</p>',
+							// '<img class="avatar" src="',
+							// 	 convertPhotoURI(photo.user.primary_photo, 'ms'),
+							// 	'" width="60" height="60" alt="Photo of ',
+							// 	photo.user.display_name,
+							// '">',
+							// '<p class="user-display-name">',
+							// 	'<a href="' + photo.user.user_uri + '">',
+							// 		photo.user.display_name,
+							// 	'</a>',
+							// '</p>',
 							'<p class="photo-caption">' + photo.photo_caption + '</p>',
 							'<p class="time-uploaded">Uploaded ' + $.timeago( photo.time_uploaded ) + '</p>',
 						'</div>'
