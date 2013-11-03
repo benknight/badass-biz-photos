@@ -155,7 +155,7 @@ function getBizPhotos(index, length, first_run) {
 					layer: [
 						'<div class="photo-details">',
 							'<div class="avatar">',
-								$user_passport.find('.photo-img')[0].outerHTML,
+								$user_passport.find('.photo-box-img')[0].outerHTML,
 							'</div>',
 							'<p class="user-display-name">',
 								$user_passport.find('#photo-uploader-uri')[0].outerHTML,
@@ -246,8 +246,8 @@ function processDOMData(dom) {
 	$('#photo-thumbnails .photo', dom).each(function(index) {
 		$this = $(this)
 		imageData.push({
-			thumb: $this.find('img.photo-img').attr('src'),
-			image: convertPhotoURI( $this.find('img.photo-img').attr('src'), 'o' ),
+			thumb: $this.find('img.photo-box-img').attr('src'),
+			image: convertPhotoURI( $this.find('img.photo-box-img').attr('src'), 'o' ),
 			title: $this.find('.caption p:first-child a'),
 			description: $this.find('.caption p:nth-child(2)').text()
 		})
@@ -258,7 +258,7 @@ function processDOMData(dom) {
 // do some nifty UI enhancements on *_photos pages
 function enhanceGridPhotos() {
 	// convert 100x100 photos to 250x250
-	$('.photos img.photo-img').attr('src', function(index, attr) {
+	$('.photos img.photo-box-img').attr('src', function(index, attr) {
 		$(this).data('galleria-index', index)
 		return convertPhotoURI(attr, 'ls')
 
