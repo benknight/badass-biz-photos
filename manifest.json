@@ -1,6 +1,6 @@
 {
 	"name": "Badass Biz Photos",
-	"version": "0.9.4",
+	"version": "0.9.5",
 	"manifest_version": 2,
 	"description": "Yelp Hackathon 9.0 project",
 	"icons": {
@@ -10,8 +10,7 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"http://*.yelp.com/biz*",
-				"http://*.yelp.com/user_photos*"
+				"http://*.yelp.com/biz/*"
 			],
 			"css": [
 				"badass-biz-photos.css",
