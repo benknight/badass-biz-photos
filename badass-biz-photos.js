@@ -86,7 +86,7 @@ function badassBizPhotos() {
 		if ( is_biz ) {
 			// shim a div over the biz photos UIs on the biz page to hijack click
 			$('<div id="biz-photos-shim">').appendTo('#slide-viewer')
-			$('#biz-photos-shim, #bizPhotos img')
+			$('#biz-photos-shim, #bizPhotos img, .showcase-footer-links a')
 				.click(function(e) {
 					// prevent page events
 					e.stopPropagation()
@@ -94,6 +94,10 @@ function badassBizPhotos() {
 					showGallery()
 				}
 			)
+
+			$('.showcase .photo-1').click(function(e) { e.preventDefault(); Galleria.get(0).show(0); showGallery() })
+			$('.showcase .photo-2').click(function(e) { e.preventDefault(); Galleria.get(0).show(1); showGallery() })
+			$('.showcase .photo-3').click(function(e) { e.preventDefault(); Galleria.get(0).show(2); showGallery() })
 
 			// update the slideshow shim with the current galleria index
 			$('#slide-viewer').bind('DOMSubtreeModified', function(e) {
@@ -104,7 +108,7 @@ function badassBizPhotos() {
 				Galleria.get(0).show( $(this).data('galleria-index') )
 			})
 
-			add_photos_url = $('.add-biz-photo, #slide-viewer-add-photo').attr('href')
+			add_photos_url = $('a:contains("Add Photo")').attr('href')
 		}
 
 		var re = /biz_user_photos\/([\w\-]+)\/upload/

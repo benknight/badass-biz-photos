@@ -11,8 +11,13 @@ Galleria.addTheme({
 		maxScaleRatio: 1,
 		layerFollow: false,
 		showInfo: false,
-		//showCounter: false,
-		//thumbnails: 'lazy',
+		// Tried these options to get rid of `.show(index)` delay.
+		// carouselSpeed: 0,
+		// idleSpeed: 0,
+		// transitionSpeed: 0,
+		// queue: false,
+		// showCounter: false,
+		// thumbnails: 'lazy',
 
 		// custom options
 		_collectionName: 'Photos',
