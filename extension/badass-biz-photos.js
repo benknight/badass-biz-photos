@@ -95,9 +95,12 @@ function badassBizPhotos() {
 				}
 			)
 
-			$('.showcase .photo-1').click(function(e) { e.preventDefault(); Galleria.get(0).show(0); showGallery() })
-			$('.showcase .photo-2').click(function(e) { e.preventDefault(); Galleria.get(0).show(1); showGallery() })
-			$('.showcase .photo-3').click(function(e) { e.preventDefault(); Galleria.get(0).show(2); showGallery() })
+			$('.showcase .photo-1').click(function(e) {
+				e.preventDefault(); Galleria.get(0).show(2); showGallery() })
+			$('.showcase .photo-2').click(function(e) {
+				e.preventDefault(); Galleria.get(0).show(0); showGallery() })
+			$('.showcase .photo-3').click(function(e) {
+				e.preventDefault(); Galleria.get(0).show(1); showGallery() })
 
 			// update the slideshow shim with the current galleria index
 			$('#slide-viewer').bind('DOMSubtreeModified', function(e) {

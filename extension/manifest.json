@@ -1,8 +1,9 @@
 {
 	"name": "Badass Biz Photos",
-	"version": "0.9.5",
+	"version": "0.9.6",
 	"manifest_version": 2,
-	"description": "Yelp Hackathon 9.0 project",
+	"update_url": "https://rawgithub.com/benknight/badass-biz-photos/master/updates.xml",
+	"description": "Yelp Hackathon 9.0 project by Benjamin Knight and Bradley Menezes",
 	"icons": {
 		"16":  "icon.png",
 		"128": "icon.png"
