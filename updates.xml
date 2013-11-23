@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <gupdate xmlns="http://www.google.com/update2/response" protocol="2.0">
 	<app appid="khplgclpfihmheamjkokedmbhlligeie">
+		<updatecheck codebase="https://googledrive.com/host/0B2bBxyaA8wv5bjhZLTFUcHlpb2c/badass-biz-photos-0.9.8.crx" version="0.9.8" />
+	</app>
+	<app appid="khplgclpfihmheamjkokedmbhlligeie">
 		<updatecheck codebase="https://googledrive.com/host/0B2bBxyaA8wv5bjhZLTFUcHlpb2c/badass-biz-photos-0.9.7.crx" version="0.9.7" />
 	</app>
 	<app appid="khplgclpfihmheamjkokedmbhlligeie">
