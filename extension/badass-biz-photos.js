@@ -162,10 +162,10 @@ function getBizPhotos(index, length, first_run) {
 					layer: [
 						'<div class="photo-details">',
 							'<div class="avatar">',
-								$user_passport.find('.photo-box-img')[0].outerHTML,
+								$('<div>').append($user_passport.find('.photo-box-img')).html(),
 							'</div>',
 							'<p class="user-display-name">',
-								$user_passport.find('#photo-uploader-uri')[0].outerHTML,
+								$('<div>').append($user_passport.find('#photo-uploader-uri')).html(),
 							'</p>',
 							'<p class="photo-caption">' + photo.photo_caption + '</p>',
 							'<p class="time-uploaded">Uploaded ' + $.timeago( photo.time_uploaded ) + '</p>',
