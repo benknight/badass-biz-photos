@@ -1,6 +1,8 @@
+(function () {
+
 // require jQuery & Galleria
 if ( ! window.jQuery || ! window.Galleria ) {
-	return false
+	return false;
 }
 
 
@@ -284,3 +286,5 @@ function enhanceGridPhotos() {
 
 // do do that voodoo that you do
 $(document).ready( badassBizPhotos )
+
+})();
